@@ -18,6 +18,9 @@ Ultimately, I needed to access the raw data captured and saved from EZ-View™ -
 
 Before discovering the actual capabilities of the "Save Data as Text" option, I had already started reverse-engineering the native binary file format. Outside of a few of the fields in the file header and the break/error conditions that I didn't have any samples for to reproduce, I already had most of the file format decoded and this project well underway.  In early 2023, I then also received from SE an email with the contents of [`EZView2.h`](EZView2.h) (filename and indentation were not provided / lost in transit, and are my own best renditions).
 
+At least current EZ-View™ software versions are Windows-only.  As part of a hopeful future effort, I'd like to see what would be required to perform a capture from an EZ-Tap product in Linux - such as from a Raspberry Pi.  It seems that, at worst, these adapters (or at least can) present themselves as a pair of Virtual COM ports (VCPs), using standard [FTDI](https://ftdichip.com/) drivers.  Though it seems like at least some versions of the software use the [D2XX Direct drivers](https://ftdichip.com/drivers/d2xx-drivers/).  Linux drivers are readily available for both.  Further research would be required here to see how much of the protocol details carry over from the interface itself, vs. what is provided by the software - and then how much of this library might still apply in its current state.  However, at least a cursory review of the D2XX Programmer's Guide - including `FT_GetModemStatus` - seem to not at all align to the data structures currently defined by this library.
+
+
 ## Features
 
 This library was written with at least an attempt to follow accepted Python standards and best practices.
@@ -44,7 +47,7 @@ The native binary file format includes `EZView2` at the beginning of the file - 
 
 I can't fault SE for prioritizing efficiency over spending more bytes towards allowing for representing longer time offsets per data packet / row / event.  The current format allocates 5 bytes for the time - 1 DWORD (4 bytes or 32 bits) at the beginning of a data packet, followed by 1 more byte as the most significant byte (MSB) at the end of each data packet.
 
-With these 5 bytes as 40 bits, 2^40 = 1,099,511,627,776 ticks.  These are divided by 1 or 100 microseconds (μs), depending upon the device type signified in the header.  Assuming the higher resolution case of 1 μs:  1,099,511,627,776 / (1,000 μs / ms) / (1,000 ms / s) / (60 s / minute) / (60 minutes / hour) / (24 hours / day) = ~12.726 days (12d, 17h, 25m, ~11.63s).  (When using the 100 μs, this extends to over 1,272 days - or just shy of 3.5 years.)
+With these 5 bytes as 40 bits, 2^40 = 1,099,511,627,776 ticks.  These are divided by 1 or 100 microseconds (μs), depending upon the device type signified in the header.  Assuming the higher resolution case of 1 μs:  1,099,511,627,776 / (1,000 μs / ms) / (1,000 ms / s) / (60 s / minute) / (60 minutes / hour) / (24 hours / day) = ~12.726 days (12d, 17h, 25m, ~11.63s).  (When using the 100 μs resolution, this extends to over 1,272 days - or just shy of 3.5 years.)
 
 When EZ-View™ performs a capture with a duration longer the ~12.7 or ~1,272 days as detailed above, it seamlessly overflows.  This was confirmed in a real-world capture.  The line / row numbers continue to increment as usual, but the time offset wraps around the maximum value and restarts at a relative 0.  This relative offset may optionally be shown in absolute time, in which it is simply calculated from the absolute timestamps stored in the header data - meaning the "absolute time" mode is just an alternate display representation, and will also represent the same overflow / wrap-around of time.
 
