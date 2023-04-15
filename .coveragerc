@@ -1,0 +1,11 @@
+# - https://pytest-cov.readthedocs.io/en/latest/config.html
+[run]
+omit = .venv/*
+
+# - https://stackoverflow.com/questions/9202723/excluding-abstractproperties-from-coverage-reports
+# - https://stackoverflow.com/questions/9757299/python-testing-an-abstract-base-class#17345619
+
+# - https://github.com/nedbat/coveragepy/issues/970
+[report]
+exclude_lines =
+	@typing.overload

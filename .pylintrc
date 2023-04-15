@@ -1,0 +1,22 @@
+[MESSAGES CONTROL]
+disable=
+	C0111, # missing-docstring
+	C0325, # superfluous-parens
+	R0902, # too-many-instance-attributes
+	R0903, # too-few-public-methods
+	R0904, # too-many-public-methods
+
+[BASIC]
+
+# default: [a-z_][a-z0-9_]{2,30}$
+variable-rgx=[a-z_][a-z0-9_]{0,30}$
+
+[FORMAT]
+indent-string='\t'
+indent-after-paren=1
+max-line-length=120
+expected-line-ending-format=LF
+
+# default: ^\s*(# )?<?https?://\S+>?$
+# - https://docs.pylint.org/en/1.6.0/features.html#id31
+ignore-long-lines=^\s*(# ( *- )?)?<?https?://\S+>?$

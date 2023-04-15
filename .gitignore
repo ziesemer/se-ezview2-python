@@ -1,0 +1,13 @@
+.*
+!/.vscode/
+/.vscode/*
+!/.vscode/launch.json
+/htmlcov/
+/coverage.xml
+**/__pycache__/
+!.coveragerc
+!.gitattributes
+!.gitignore
+!.markdownlint.json
+!.pylintrc
+/Samples/
